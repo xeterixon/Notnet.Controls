@@ -20,7 +20,7 @@ namespace Test
 				++counter;
 				Items.Add (new MyGridViewCellModel{ Text = string.Format("Timer {0}",counter) });
 
-				return true;
+				return  counter < 10;
 			});
 		}
 	}

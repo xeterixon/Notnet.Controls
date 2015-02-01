@@ -10,12 +10,12 @@ namespace Notnet.Controls
 	/// Gallery view.
 	/// The ItemsSource property should be bound to a ObservableCollection.
 	/// </summary>
-	public class GridView<TViewCell,TModel> : WrapLayout
+	public class NCGridView<TViewCell,TModel> : WrapLayout
 		where TViewCell: View, new()
 	{
-		public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create<GridView<TViewCell,TModel>,IEnumerable> ((prop) => prop.ItemsSource, default(IEnumerable), 
-			propertyChanged:(bindable, oldValue, newValue) =>  ((GridView<TViewCell,TModel>)bindable).ItemsSourceChanges(),
-			propertyChanging:(bindable, oldValue, newValue) =>  ((GridView<TViewCell,TModel>)bindable).ItemsSourceAboutToChange()
+		public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create<NCGridView<TViewCell,TModel>,IEnumerable> ((prop) => prop.ItemsSource, default(IEnumerable), 
+			propertyChanged:(bindable, oldValue, newValue) =>  ((NCGridView<TViewCell,TModel>)bindable).ItemsSourceChanges(),
+			propertyChanging:(bindable, oldValue, newValue) =>  ((NCGridView<TViewCell,TModel>)bindable).ItemsSourceAboutToChange()
 		);
 
 
@@ -64,7 +64,7 @@ namespace Notnet.Controls
 			}
 			
 		}
-		public GridView ()
+		public NCGridView ()
 		{
 			Orientation = StackOrientation.Horizontal;
 		}

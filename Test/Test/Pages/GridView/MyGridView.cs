@@ -33,7 +33,7 @@ namespace Test
 	{
 		public string Text{get;set;}
 	}
-	public class MyGridView : GridView<MyGridViewCell,MyGridViewCellModel>
+	public class MyGridView : NCGridView<MyGridViewCell,MyGridViewCellModel>
 	{
 
 	}

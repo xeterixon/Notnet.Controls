@@ -3,7 +3,7 @@
 	xmlns="http://xamarin.com/schemas/2014/forms" 
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
 	x:Class="Test.TestGridView"
-	Title="Grid view Test"
+	Title="Grid view"
 	xmlns:Local="clr-namespace:Test;assembly=Test"
 	>
 	<ContentPage.BindingContext>
