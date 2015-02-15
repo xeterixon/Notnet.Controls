@@ -206,7 +206,10 @@ namespace Notnet.Controls
 					double childWidth = request.Request.Width;
 					double childHeight = request.Request.Height;
 					rowHeight = Math.Max(rowHeight, childHeight);
-
+					int numItemsPerRow = (int)(width/(childWidth + Spacing));
+					if (numItemsPerRow > 0) {
+						childWidth = (width - (Spacing * numItemsPerRow)) / numItemsPerRow;
+					}
 					if (xPos + childWidth > width) {
 						xPos = x;
 						yPos += rowHeight + Spacing;

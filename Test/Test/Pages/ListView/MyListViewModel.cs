@@ -25,6 +25,7 @@ namespace Test
 		{
 			Items = new ObservableCollection<string> ();
 			RefreshItems = new Command (async () => { await RefreshData();});
+			Items.Add ("Pull to refresh");
 		}
 		private async Task RefreshData()
 		{

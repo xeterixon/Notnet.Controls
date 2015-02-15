@@ -1,5 +1,8 @@
 ﻿using System;
 using Xamarin.Forms;
+using Notnet.Controls;
+
+
 namespace Test
 {
 	public class MainView : TabbedPage
@@ -9,6 +12,7 @@ namespace Test
 			Title="Notnet Controls Tests";
 			Children.Add (new TestGridView ());
 			Children.Add (new MyListView ());
+			Children.Add (new MyTabbedPage ());
 		}
 	}
 }
