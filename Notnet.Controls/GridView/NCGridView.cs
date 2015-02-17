@@ -14,7 +14,7 @@ namespace Notnet.Controls
 		where TViewCell: View, new()
 	{
 		public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create<NCGridView<TViewCell,TModel>,IEnumerable> ((prop) => prop.ItemsSource, default(IEnumerable), 
-			propertyChanged:(bindable, oldValue, newValue) =>  ((NCGridView<TViewCell,TModel>)bindable).ItemsSourceChanges(),
+			propertyChanged:(bindable, oldValue, newValue) =>  ((NCGridView<TViewCell,TModel>)bindable).ItemsSourceChanged(),
 			propertyChanging:(bindable, oldValue, newValue) =>  ((NCGridView<TViewCell,TModel>)bindable).ItemsSourceAboutToChange()
 		);
 
@@ -23,7 +23,7 @@ namespace Notnet.Controls
 			get{ return (IEnumerable)GetValue (ItemsSourceProperty); }
 			set{ SetValue (ItemsSourceProperty, value); }
 		}
-		private void ItemsSourceChanges()
+		private void ItemsSourceChanged()
 		{
 			var occ = this.ItemsSource as INotifyCollectionChanged;
 			if (occ != null) {

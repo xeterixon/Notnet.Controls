@@ -95,7 +95,7 @@ namespace Notnet.Controls.Droid
                     var item = listview.GetChildAt(0);
                     return item != null && item.Top != 0;
                 }
-                return false;
+                return true;
             }
             return false;
         }
