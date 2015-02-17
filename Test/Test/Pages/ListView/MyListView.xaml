@@ -19,6 +19,7 @@
 				RefreshCommand="{Binding RefreshItems}"
 				IsRefreshing="{Binding IsRefreshing}"
 				>
+
 				<ListView.ItemTemplate>
 					<DataTemplate>
 						<TextCell Text="{Binding}"/>

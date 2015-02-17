@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage 
+	xmlns="http://xamarin.com/schemas/2014/forms"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	x:Class="Test.MyListView2"
+	xmlns:Controls="clr-namespace:Notnet.Controls;assembly=Notnet.Controls"
+	xmlns:Local="clr-namespace:Test;assembly=Test"
+	Title="Listview 2"
+	>
+	<ContentPage.BindingContext>
+		<Local:MyListViewModel/>
+	</ContentPage.BindingContext>
+	<ContentPage.Content>
+<!-- 
+Ok, so this is dog-ugly, but it kinda work:
+The NCPullRefreshContentView is more or less an Android thing, while NCListView is iOS.
+If possible, and time allows, I'll fix this later...
+-->
+		<Controls:NCPullRefreshContentView
+				EnablePullToRefresh="true"
+				RefreshText=""
+				RefreshCommand="{Binding RefreshItems}"
+				IsRefreshing="{Binding IsRefreshing}">
+				<Controls:NCPullRefreshContentView.Content>
+					<Controls:NCListView 
+						ItemsSource="{Binding Items}" 
+						EnablePullToRefresh="true"
+						RefreshText=""
+						RefreshCommand="{Binding RefreshItems}"
+						IsRefreshing="{Binding IsRefreshing}"
+						>
+
+						<ListView.ItemTemplate>
+							<DataTemplate>
+								<TextCell Text="{Binding}"/>
+							</DataTemplate>
+						</ListView.ItemTemplate>
+					</Controls:NCListView>
+				</Controls:NCPullRefreshContentView.Content>
+			</Controls:NCPullRefreshContentView>
+	</ContentPage.Content>
+</ContentPage>
