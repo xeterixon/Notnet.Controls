@@ -48,6 +48,15 @@
     <Compile Include="Pages\ListView\MyListView2.xaml.cs">
       <DependentUpon>MyListView2.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\GridView\TestPage2.xaml.cs">
+      <DependentUpon>TestPage2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\GridView\TestPage2ViewModel.cs" />
+    <Compile Include="Pages\GridView\TestPage2Grids.cs" />
+    <Compile Include="Pages\ComboBox\MyComboView.xaml.cs">
+      <DependentUpon>MyComboView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ComboBox\MyComboViewModel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Forms.1.3.4.6332\build\portable-win+net45+wp80+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\..\packages\Xamarin.Forms.1.3.4.6332\build\portable-win+net45+wp80+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />
@@ -61,6 +70,7 @@
     <Folder Include="Pages\" />
     <Folder Include="Pages\ListView\" />
     <Folder Include="Pages\TabbedView\" />
+    <Folder Include="Pages\ComboBox\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Pages\GridView\TestGridView.xaml">
@@ -73,6 +83,12 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Pages\ListView\MyListView2.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\GridView\TestPage2.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\ComboBox\MyComboView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

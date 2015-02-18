@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage 
+	xmlns="http://xamarin.com/schemas/2014/forms" 
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+	x:Class="Test.MyComboView"
+	xmlns:Controls="clr-namespace:Notnet.Controls;assembly=Notnet.Controls"
+	xmlns:Local="clr-namespace:Test;assembly=Test"
+	Title="ComboBox"
+	>
+	<ContentPage.BindingContext>
+		<Local:MyComboViewModel/>
+	</ContentPage.BindingContext>
+	<ContentPage.Content>
+		<StackLayout Orientation="Vertical" Padding="10,0,10,0">
+			<Label Text="Hello"/>
+			<Controls:NCComboBox
+				Title="What to do"
+				ItemsSource="{Binding MyItems}"
+				PropertyDisplayName="Text"
+			/>
+			<Editor VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Gray"/>
+		</StackLayout>
+	</ContentPage.Content>
+</ContentPage>

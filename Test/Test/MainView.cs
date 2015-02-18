@@ -12,7 +12,8 @@ namespace Test
 			Title="Notnet Controls Tests";
 			Children.Add (new TestGridView ());
             Children.Add (new MyListView2 ());
-			Children.Add (new MyTabbedPage ());
+            Children.Add (new TestPage2 ());
+            Children.Add(new MyComboView());
 		}
 	}
 }

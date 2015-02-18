@@ -17,7 +17,7 @@ The NCPullRefreshContentView is more or less an Android thing, while NCListView 
 If possible, and time allows, I'll fix this later...
 -->
 		<Controls:NCPullRefreshContentView
-				RefreshText=""
+				RefreshText="Fetch"
 				RefreshCommand="{Binding RefreshItems}"
 				IsRefreshing="{Binding IsRefreshing}">
 
@@ -25,7 +25,7 @@ If possible, and time allows, I'll fix this later...
 					<Controls:NCListView
 						ItemsSource="{Binding Items}"
 						EnablePullToRefresh="true"
-						RefreshText="Fetcb"
+						RefreshText="Fetch"
 						RefreshCommand="{Binding RefreshItems}"
 						IsRefreshing="{Binding IsRefreshing}"
 						>
