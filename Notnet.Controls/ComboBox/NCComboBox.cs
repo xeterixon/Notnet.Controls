@@ -3,6 +3,8 @@ using Xamarin.Forms;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace Notnet.Controls
 {
@@ -34,8 +36,26 @@ namespace Notnet.Controls
             get{ return (string)GetValue(TitleProperty); }
             set{ SetValue(TitleProperty, value); }
         }
+		public static readonly BindableProperty ListBackgroundColorProperty = BindableProperty.Create<NCComboBox,Color> ((prop) => prop.ListBackgroundColor, Color.Transparent);
 
+		public Color ListBackgroundColor {
+			get{ return (Color)GetValue (ListBackgroundColorProperty); }
+			set{ SetValue (ListBackgroundColorProperty, value); }
+		}
+
+		public static readonly BindableProperty ButtonBackgroundColorProperty = BindableProperty.Create<NCComboBox,Color> ((prop) => prop.ButtonBackgroundColor, Color.Transparent);
+
+		public Color ButtonBackgroundColor {
+			get{ return (Color)GetValue (ButtonBackgroundColorProperty); }
+			set{ SetValue (ButtonBackgroundColorProperty, value); }
+		}
         private IList<ItemHolder> Items{ get; set; }
+		public static readonly BindableProperty ListIsVisibleProperty = BindableProperty.Create<NCComboBox,bool> ((prop) => prop.ListIsVisible, false);
+
+		public bool ListIsVisible {
+			get{ return (bool)GetValue (ListIsVisibleProperty); }
+			set{ SetValue (ListIsVisibleProperty, value); }
+		}
         private void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
         {
             Items.Clear();
@@ -63,17 +83,37 @@ namespace Notnet.Controls
             }
             SetupUI();
         }
+		protected override void OnPropertyChanged (string propertyName)
+		{
+
+			if (propertyName == NCComboBox.ListBackgroundColorProperty.PropertyName) {
+				_itemsLayout.BackgroundColor = ListBackgroundColor;
+			} else if (propertyName == NCComboBox.ListIsVisibleProperty.PropertyName) {
+				if (ListIsVisible) {
+					ShowList ();
+				} else {
+					HideList ();
+				}
+			}
+			else if (propertyName == NCComboBox.ButtonBackgroundColorProperty.PropertyName) 
+			{
+				if (Children.Any ()) {
+					Children [0].BackgroundColor = ButtonBackgroundColor;
+				}
+			}
+
+		}
         private void SetupUI()
         {
-            ListIsVisible = false;
+			_listIsVisible = false;
             Children.Clear();
-            ItemsLayout.Children.Clear();
+            _itemsLayout.Children.Clear();
             var button = new Button{ 
                 Text = Title, 
-                BackgroundColor = Color.FromHex("#ACACAC"),
+				BackgroundColor = ButtonBackgroundColor,
                 BorderRadius=0,
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                Command = new Command(()=>ToogleList())
+                Command = new Command(async ()=>await ToogleList())
             };
             Children.Add(button);
             foreach (var item in Items)
@@ -81,51 +121,72 @@ namespace Notnet.Controls
                 var b = new Button{ 
                     Text = item.Text, 
                     VerticalOptions = LayoutOptions.FillAndExpand, 
-                    FontSize=14, HeightRequest=26,
+                    FontSize=16, 
+					HeightRequest=40,
                     BorderRadius=0,
+					BorderWidth = 0,
+					BackgroundColor = ListBackgroundColor,
                     CommandParameter = item,
-                    Command = new Command((obj)=> ItemSelected(obj))
+                    Command = new Command(async (obj)=> await ItemSelected(obj))
                 };
-                ItemsLayout.Children.Add(b);
+                _itemsLayout.Children.Add(b);
 
             }
+			_menuHeight = 40 * _itemsLayout.Children.Count;
+			_itemsLayout.HeightRequest = 0;
+			Children.Add(_itemsLayout);
+
         }
-        private void ToogleList()
+		private async Task ToogleList()
         {
-            if (ListIsVisible)
+			if (_listIsVisible)
             {
-                HideList();
+                await HideList();
             }
             else
             {
-                ShowList();
+                await ShowList();
             }
         }
-        private void ShowList()
+		private async Task ShowList()
         {
-            Children.Add(ItemsLayout);
-            ListIsVisible = true;
+			if (!_listIsVisible) {
+				_itemsLayout.Animate ("ShowMenu", new Animation ((d) => {
+					_itemsLayout.HeightRequest = _menuHeight * d;
+					_listIsVisible = true;
+				}, 0, 1, Easing.SpringOut, () => {
+					_listIsVisible = true;
+				}));
+			}
+
         }
-        private void ItemSelected(object obj)
+		private async Task HideList()
         {
-            var holder = obj as ItemHolder;
-            ((Button)Children[0]).Text = Title + " : " + holder.Text;
-            HideList();
-        }
-        private void HideList()
-        {
-            if (ListIsVisible)
+			if (_listIsVisible)
             {
-                Children.Remove(ItemsLayout);
-                ListIsVisible = false;
+				_itemsLayout.Animate ("HideMenu", new Animation ((d) => {
+					_itemsLayout.HeightRequest = _menuHeight * d;
+					_listIsVisible = false;
+				}, 1, 0, Easing.SpringIn, () => {
+					_listIsVisible = false;
+				}));
+
             }
         }
-        private StackLayout ItemsLayout;
-        private bool ListIsVisible = false;
+		private async Task ItemSelected(object obj)
+		{
+			var holder = obj as ItemHolder;
+			((Button)Children[0]).Text = Title + " : " + holder.Text;
+			await HideList();
+		}
+
+		double _menuHeight = 0;
+		private StackLayout _itemsLayout;
+		private bool _listIsVisible = false;
         public NCComboBox()
         {
             Spacing = 0;
-            ItemsLayout = new StackLayout
+            _itemsLayout = new StackLayout
             {
                     Orientation = StackOrientation.Vertical,
                     Spacing = 0

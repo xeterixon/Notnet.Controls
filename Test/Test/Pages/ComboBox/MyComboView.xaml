@@ -17,8 +17,14 @@
 				Title="What to do"
 				ItemsSource="{Binding MyItems}"
 				PropertyDisplayName="Text"
+				ListBackgroundColor="#CACACA"
+				ButtonBackgroundColor="#ACACAC"
 			/>
-			<Editor VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Gray"/>
+			<Editor 
+				VerticalOptions="FillAndExpand" 
+				HorizontalOptions="FillAndExpand" 
+				BackgroundColor="Gray"/>
+
 		</StackLayout>
 	</ContentPage.Content>
 </ContentPage>
