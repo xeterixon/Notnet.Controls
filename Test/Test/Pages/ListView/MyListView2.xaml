@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentPage 
+<ContentPage
 	xmlns="http://xamarin.com/schemas/2014/forms"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	x:Class="Test.MyListView2"
@@ -11,21 +11,21 @@
 		<Local:MyListViewModel/>
 	</ContentPage.BindingContext>
 	<ContentPage.Content>
-<!-- 
+<!--
 Ok, so this is dog-ugly, but it kinda work:
 The NCPullRefreshContentView is more or less an Android thing, while NCListView is iOS.
 If possible, and time allows, I'll fix this later...
 -->
 		<Controls:NCPullRefreshContentView
-				EnablePullToRefresh="true"
 				RefreshText=""
 				RefreshCommand="{Binding RefreshItems}"
 				IsRefreshing="{Binding IsRefreshing}">
+
 				<Controls:NCPullRefreshContentView.Content>
-					<Controls:NCListView 
-						ItemsSource="{Binding Items}" 
+					<Controls:NCListView
+						ItemsSource="{Binding Items}"
 						EnablePullToRefresh="true"
-						RefreshText=""
+						RefreshText="Fetcb"
 						RefreshCommand="{Binding RefreshItems}"
 						IsRefreshing="{Binding IsRefreshing}"
 						>

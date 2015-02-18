@@ -11,12 +11,6 @@ namespace Notnet.Controls
             get{ return (string)GetValue (RefreshTextProperty); }
             set{ SetValue (RefreshTextProperty, value); }
         }
-        public static readonly BindableProperty EnablePullToRefreshProperty = BindableProperty.Create<NCPullRefreshContentView,bool> ((prop) => prop.EnablePullToRefresh, false);
-
-        public bool EnablePullToRefresh {
-            get{ return (bool)GetValue (EnablePullToRefreshProperty); }
-            set{ SetValue (EnablePullToRefreshProperty, value); }
-        }
         public static readonly BindableProperty RefreshCommandProperty = BindableProperty.Create<NCPullRefreshContentView,Command> ((prop) => prop.RefreshCommand, null);
 
         public Command RefreshCommand {
@@ -34,4 +28,3 @@ namespace Notnet.Controls
         }
     }
 }
-
