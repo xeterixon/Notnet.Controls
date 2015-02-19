@@ -36,14 +36,14 @@ namespace Notnet.Controls
             get{ return (string)GetValue(TitleProperty); }
             set{ SetValue(TitleProperty, value); }
         }
-		public static readonly BindableProperty ListBackgroundColorProperty = BindableProperty.Create<NCComboBox,Color> ((prop) => prop.ListBackgroundColor, Color.Transparent);
+		public static readonly BindableProperty ListBackgroundColorProperty = BindableProperty.Create<NCComboBox,Color> ((prop) => prop.ListBackgroundColor, (Color)Button.BackgroundColorProperty.DefaultValue);
 
 		public Color ListBackgroundColor {
 			get{ return (Color)GetValue (ListBackgroundColorProperty); }
 			set{ SetValue (ListBackgroundColorProperty, value); }
 		}
 
-		public static readonly BindableProperty ButtonBackgroundColorProperty = BindableProperty.Create<NCComboBox,Color> ((prop) => prop.ButtonBackgroundColor, Color.Transparent);
+		public static readonly BindableProperty ButtonBackgroundColorProperty = BindableProperty.Create<NCComboBox,Color> ((prop) => prop.ButtonBackgroundColor, (Color)Button.BackgroundColorProperty.DefaultValue);
 
 		public Color ButtonBackgroundColor {
 			get{ return (Color)GetValue (ButtonBackgroundColorProperty); }
@@ -103,7 +103,7 @@ namespace Notnet.Controls
 					HideList ();
 				}
 			}
-			else if (propertyName == NCComboBox.ButtonBackgroundColorProperty.PropertyName) 
+			else if (propertyName == NCComboBox.ButtonBackgroundColorProperty.PropertyName)
 			{
 				if (Children.Any ()) {
 					Children [0].BackgroundColor = ButtonBackgroundColor;
@@ -116,8 +116,8 @@ namespace Notnet.Controls
 			_listIsVisible = false;
             Children.Clear();
             _itemsLayout.Children.Clear();
-            var button = new Button{ 
-                Text = Title, 
+            var button = new Button{
+                Text = Title,
 				BackgroundColor = ButtonBackgroundColor,
                 BorderRadius=0,
                 VerticalOptions = LayoutOptions.FillAndExpand,
@@ -126,10 +126,10 @@ namespace Notnet.Controls
             Children.Add(button);
             foreach (var item in Items)
             {
-                var b = new Button{ 
-                    Text = item.Text, 
-                    VerticalOptions = LayoutOptions.FillAndExpand, 
-                    FontSize=16, 
+                var b = new Button{
+                    Text = item.Text,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    FontSize=16,
 					HeightRequest=40,
                     BorderRadius=0,
 					BorderWidth = 0,
@@ -213,4 +213,3 @@ namespace Notnet.Controls
         }
     }
 }
-
