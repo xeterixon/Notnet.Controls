@@ -87,7 +87,7 @@ namespace Notnet.Controls
                     }
                 }
                 Items.Add(new ItemHolder{Text= displayText, Index = index++});
-               
+
             }
             SetupUI();
         }
