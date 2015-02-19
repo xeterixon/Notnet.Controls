@@ -12,18 +12,17 @@
 	</ContentPage.BindingContext>
 	<ContentPage.Content>
 		<StackLayout Orientation="Vertical" Padding="10,0,10,0">
-			<Label Text="Hello"/>
 			<Controls:NCComboBox
 				Title="What to do"
 				ItemsSource="{Binding MyItems}"
 				PropertyDisplayName="Text"
 				ListBackgroundColor="#CACACA"
 				ButtonBackgroundColor="#ACACAC"
-			/>
-			<Editor 
-				VerticalOptions="FillAndExpand" 
-				HorizontalOptions="FillAndExpand" 
-				BackgroundColor="Gray"/>
+				SelectedIndex="{Binding SelectedIndex}"
+				>
+
+			</Controls:NCComboBox>
+			<Label Text="{Binding WhatToDo}"/>
 
 		</StackLayout>
 	</ContentPage.Content>

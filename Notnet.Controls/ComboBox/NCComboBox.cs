@@ -56,6 +56,14 @@ namespace Notnet.Controls
 			get{ return (bool)GetValue (ListIsVisibleProperty); }
 			set{ SetValue (ListIsVisibleProperty, value); }
 		}
+        public static readonly BindableProperty SelectedIndexProperty = BindableProperty.Create<NCComboBox,int>((obj) => obj.SelectedIndex, -1,BindingMode.OneWayToSource);
+
+        public int SelectedIndex
+        {
+            get{ return (int)GetValue(SelectedIndexProperty); }
+            set{ SetValue(SelectedIndexProperty, value); }
+        }
+
         private void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
         {
             Items.Clear();
@@ -134,7 +142,7 @@ namespace Notnet.Controls
             }
 			_menuHeight = 40 * _itemsLayout.Children.Count;
 			_itemsLayout.HeightRequest = 0;
-			Children.Add(_itemsLayout);
+            Children.Add(_scrollView);
 
         }
 		private async Task ToogleList()
@@ -153,10 +161,11 @@ namespace Notnet.Controls
 			if (!_listIsVisible) {
 				_itemsLayout.Animate ("ShowMenu", new Animation ((d) => {
 					_itemsLayout.HeightRequest = _menuHeight * d;
-					_listIsVisible = true;
-				}, 0, 1, Easing.SpringOut, () => {
-					_listIsVisible = true;
-				}));
+				}, 0, 1, Easing.SpringOut),
+                    finished:(d,b)=>{
+                    _listIsVisible = true;
+
+                });
 			}
 
         }
@@ -166,10 +175,11 @@ namespace Notnet.Controls
             {
 				_itemsLayout.Animate ("HideMenu", new Animation ((d) => {
 					_itemsLayout.HeightRequest = _menuHeight * d;
-					_listIsVisible = false;
-				}, 1, 0, Easing.SpringIn, () => {
-					_listIsVisible = false;
-				}));
+				}, 1, 0, Easing.SpringIn),
+                    finished:(d,b)=>{
+                    _listIsVisible = false;
+
+                });
 
             }
         }
@@ -178,11 +188,13 @@ namespace Notnet.Controls
 			var holder = obj as ItemHolder;
 			((Button)Children[0]).Text = Title + " : " + holder.Text;
 			await HideList();
+            SelectedIndex = holder.Index;
 		}
 
 		double _menuHeight = 0;
 		private StackLayout _itemsLayout;
 		private bool _listIsVisible = false;
+        private ScrollView _scrollView;
         public NCComboBox()
         {
             Spacing = 0;
@@ -190,6 +202,11 @@ namespace Notnet.Controls
             {
                     Orientation = StackOrientation.Vertical,
                     Spacing = 0
+            };
+            _scrollView = new ScrollView
+            {
+                    Orientation= ScrollOrientation.Vertical,
+                    Content = _itemsLayout
             };
             Items = new List<ItemHolder>();
             SetupUI();
