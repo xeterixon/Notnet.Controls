@@ -11,14 +11,17 @@
 	</ContentPage.BindingContext>
 
 	<ContentPage.Content>
-		<StackLayout Orientation="Vertical" Padding="20,0,20,0">
+		<StackLayout Orientation="Vertical" Padding="20,0,20,0" >
 			<Label Text="Login" XAlign="Center"/>
 			<Label Text="Rotate the screen to see the wrapping layout" FontSize="8" XAlign="Center"/>
-			
+			<StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
 			<local:UserLoginGrid
 				ItemsSource="{Binding UserLoginControls}"
+				HorizontalOptions="FillAndExpand"
 				Spacing="5"
 			/>
+			</StackLayout>
+
 		</StackLayout>
 	</ContentPage.Content>
 </ContentPage>

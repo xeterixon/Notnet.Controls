@@ -9,7 +9,7 @@ namespace Test
 		public MyGridViewCell()
 		{
 			HeightRequest = 100;
-			WidthRequest = 140;
+			WidthRequest = 110;
 			BackgroundColor = Color.Gray;
 			Orientation = StackOrientation.Vertical;
 

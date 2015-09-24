@@ -5,3 +5,7 @@ packages/**/*
 Notnet.Controls.userprefs
 
 Test/Test.userprefs
+Test/iOS/bin/**
+Test/iOS/obj/**
+Test/Test/bin/**
+Test/Test/obj/**

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Collections.Specialized;
 
 namespace Notnet.Controls
 {
@@ -15,16 +16,58 @@ namespace Notnet.Controls
     }
     public class NCComboBox : StackLayout
     {
-        public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create<NCComboBox,IEnumerable>((obj) => obj.ItemsSource, default(IEnumerable), propertyChanged:(bindable,oldValue,newValue)=>(bindable as NCComboBox).OnItemsSourceChanged(oldValue,newValue));
+		private int currentIndex = 0;
+		public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create<NCComboBox,IEnumerable> ((prop) => prop.ItemsSource, default(IEnumerable), 
+			propertyChanged:(bindable, oldValue, newValue) =>  ((NCComboBox)bindable).ItemsSourceChanged(),
+			propertyChanging:(bindable, oldValue, newValue) =>  ((NCComboBox)bindable).ItemsSourceAboutToChange()
+		);
 
-        public IEnumerable ItemsSource
-        {
-            get{ return (IEnumerable)GetValue(ItemsSourceProperty); }
-            set{ SetValue(ItemsSourceProperty, value); }
-        }
-        public static readonly BindableProperty PropertyDisplayNameProperty = BindableProperty.Create<NCComboBox,string>((obj) => obj.PropertyDisplayName, string.Empty);
 
-        public string PropertyDisplayName
+		public IEnumerable ItemsSource {
+			get{ return (IEnumerable)GetValue (ItemsSourceProperty); }
+			set{ SetValue (ItemsSourceProperty, value); }
+		}
+		private void ItemsSourceChanged()
+		{
+			var occ = this.ItemsSource as INotifyCollectionChanged;
+			if (occ != null) {
+				occ.CollectionChanged += HandleCollectionChanged;
+				AddItems (ItemsSource);
+				SetupMenu();
+			}
+
+		}
+
+		private void ItemsSourceAboutToChange()
+		{
+			var occ = ItemsSource as INotifyCollectionChanged;
+			if (occ != null) {
+				occ.CollectionChanged -= HandleCollectionChanged;
+				ResetMenuItems ();
+			}
+		}
+		protected void HandleCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			//TODO Handle more action
+			if (e.Action == NotifyCollectionChangedAction.Reset) {
+				ResetMenuItems ();
+			} else if (e.Action == NotifyCollectionChangedAction.Remove) {
+				ResetMenuItems ();
+				AddItems (sender as IEnumerable);
+			}
+			else if (e.Action == NotifyCollectionChangedAction.Add) 
+			{
+				if (e.NewItems != null) 
+				{
+					AddItems (e.NewItems);
+				}
+			}
+
+		}
+
+        public static readonly BindableProperty PropertyDisplayNameProperty = BindableProperty.Create<NCComboBox,string>((obj) => obj.DisplayName, string.Empty);
+
+        public string DisplayName
         {
             get{ return (string)GetValue(PropertyDisplayNameProperty); }
             set{ SetValue(PropertyDisplayNameProperty, value); }
@@ -63,20 +106,22 @@ namespace Notnet.Controls
             get{ return (int)GetValue(SelectedIndexProperty); }
             set{ SetValue(SelectedIndexProperty, value); }
         }
-
-        private void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
+		private void ResetMenuItems()
+		{
+			Items.Clear ();
+			currentIndex = 0;
+		}
+        private void AddItems( IEnumerable newValue)
         {
-            Items.Clear();
-            HideList();
+			HideList();
             if (newValue == null)
                 return;
-            int index = 0;
             foreach (var item in newValue)
             {
                 string displayText = item.ToString();
-                if (!string.IsNullOrEmpty(PropertyDisplayName))
+                if (!string.IsNullOrEmpty(DisplayName))
                 {
-                    var pinfo = item.GetType().GetRuntimeProperty(PropertyDisplayName);
+                    var pinfo = item.GetType().GetRuntimeProperty(DisplayName);
                     if (pinfo != null)
                     {
                         var value = pinfo.GetValue(item);
@@ -86,10 +131,11 @@ namespace Notnet.Controls
                         }
                     }
                 }
-                Items.Add(new ItemHolder{Text= displayText, Index = index++});
+				Items.Add(new ItemHolder{Text= displayText, Index = currentIndex++});
 
             }
-            SetupUI();
+			SetupMenu ();
+
         }
 		protected override void OnPropertyChanged (string propertyName)
 		{
@@ -102,13 +148,37 @@ namespace Notnet.Controls
 				} else {
 					HideList ();
 				}
-			}
-			else if (propertyName == NCComboBox.ButtonBackgroundColorProperty.PropertyName)
-			{
+			} else if (propertyName == NCComboBox.ButtonBackgroundColorProperty.PropertyName) {
 				if (Children.Any ()) {
 					Children [0].BackgroundColor = ButtonBackgroundColor;
 				}
+			} else if (propertyName == NCComboBox.TitleProperty.PropertyName) {
+				SetupTitle (Title);
 			}
+
+		}
+		private void SetupMenu()
+		{
+			_listIsVisible = false;
+			_itemsLayout.Children.Clear();
+			foreach (var item in Items)
+			{
+				var b = new Button{
+					Text = item.Text,
+					VerticalOptions = LayoutOptions.FillAndExpand,
+					FontSize=16,
+					HeightRequest=40,
+					BorderRadius=0,
+					BorderWidth = 0,
+					BackgroundColor = ListBackgroundColor,
+					CommandParameter = item,
+					Command = new Command((obj)=>  ItemSelected(obj))
+				};
+				_itemsLayout.Children.Add(b);
+
+			}
+			_menuHeight = 40 * _itemsLayout.Children.Count;
+			_itemsLayout.HeightRequest = 0;
 
 		}
         private void SetupUI()
@@ -121,42 +191,25 @@ namespace Notnet.Controls
 				BackgroundColor = ButtonBackgroundColor,
                 BorderRadius=0,
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                Command = new Command(async ()=>await ToogleList())
+                Command = new Command(()=>ToogleList())
             };
             Children.Add(button);
-            foreach (var item in Items)
-            {
-                var b = new Button{
-                    Text = item.Text,
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    FontSize=16,
-					HeightRequest=40,
-                    BorderRadius=0,
-					BorderWidth = 0,
-					BackgroundColor = ListBackgroundColor,
-                    CommandParameter = item,
-                    Command = new Command(async (obj)=> await ItemSelected(obj))
-                };
-                _itemsLayout.Children.Add(b);
-
-            }
-			_menuHeight = 40 * _itemsLayout.Children.Count;
-			_itemsLayout.HeightRequest = 0;
+			SetupMenu ();
             Children.Add(_scrollView);
 
         }
-		private async Task ToogleList()
+		private void ToogleList()
         {
 			if (_listIsVisible)
             {
-                await HideList();
+                HideList();
             }
             else
             {
-                await ShowList();
+                ShowList();
             }
         }
-		private async Task ShowList()
+		private void ShowList()
         {
 			if (!_listIsVisible) {
 				_itemsLayout.Animate ("ShowMenu", new Animation ((d) => {
@@ -169,7 +222,7 @@ namespace Notnet.Controls
 			}
 
         }
-		private async Task HideList()
+		private void HideList()
         {
 			if (_listIsVisible)
             {
@@ -183,11 +236,22 @@ namespace Notnet.Controls
 
             }
         }
-		private async Task ItemSelected(object obj)
+		private void SetupTitle(string append)
+		{
+			
+			((Button)Children [0]).Text = Title;
+			var title = Title;
+			if(Title != append){
+				title = Title + " : " + append;
+			}
+			((Button)Children [0]).Text = title;
+
+		}
+		private void ItemSelected(object obj)
 		{
 			var holder = obj as ItemHolder;
-			((Button)Children[0]).Text = Title + " : " + holder.Text;
-			await HideList();
+			SetupTitle (holder.Text);	
+			HideList();
             SelectedIndex = holder.Index;
 		}
 
